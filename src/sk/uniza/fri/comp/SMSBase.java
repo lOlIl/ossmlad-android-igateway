@@ -15,7 +15,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 public class SMSBase {
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
+	public static final SimpleDateFormat dateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss");
 
 	private SQLiteDatabase db;

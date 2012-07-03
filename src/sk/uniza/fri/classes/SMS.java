@@ -2,6 +2,8 @@ package sk.uniza.fri.classes;
 
 import java.util.Date;
 
+import sk.uniza.fri.comp.SMSBase;
+
 public class SMS {
 	private int id;
 	private String tel;
@@ -42,7 +44,7 @@ public class SMS {
 
 	@Override
 	public String toString() {
-		return tel + " - " + text;
+		return SMSBase.dateFormat.format(time) + "\n"+ tel +" | " + text;
 	}
 
 }
