@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Main settings" >
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="broadcastreceiver_enabled"
+            android:summary="Enabled or disabled sms broadcastreceiver to process SMS in application"
+            android:title="Enable processing SMS" />
+        
+    </PreferenceCategory>
+
+</PreferenceScreen>
