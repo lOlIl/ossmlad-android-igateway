@@ -1,5 +1,8 @@
 package sk.uniza.fri.comp;
 
+import java.util.List;
+
+import sk.uniza.fri.classes.SMS;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +29,16 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 				if (messages.length > -1) {
 					Log.i(TAG,
 							"Message recieved: " + messages[0].getMessageBody());
+					
+					SMSBase db = new SMSBase(context);
+					db.open();
+					db.createReceivedSMS("0", messages[0].getMessageBody());
+					List<SMS> data = db.getAllSMS();
+					Log.i(TAG,
+							"Current SMS count: " + data.size());
+					
+					db.close();
+					
 				}
 			}
 		}
