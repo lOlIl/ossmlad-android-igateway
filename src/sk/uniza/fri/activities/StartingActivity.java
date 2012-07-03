@@ -1,5 +1,7 @@
-package sk.uniza.fri;
+package sk.uniza.fri.activities;
 
+import sk.uniza.fri.R;
+import sk.uniza.fri.R.layout;
 import android.app.Activity;
 import android.os.Bundle;
 
