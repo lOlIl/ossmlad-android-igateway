@@ -12,7 +12,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:padding="10dp"
-        android:text="Total received:" />
+        android:text="@string/app_sms_received_total_desc" />
 
     <TextView
         android:id="@+id/activity_smslist_tv_received_count"

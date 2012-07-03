@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, StartingActivity!</string>
     <string name="app_name">OSSmlad-igateway</string>
+    <string name="app_sms_received_total_desc">Total received:</string>
 
 </resources>
