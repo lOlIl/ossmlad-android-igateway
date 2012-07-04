@@ -7,6 +7,7 @@ import android.preference.PreferenceActivity;
 public class SettingsPreferenceActivity extends PreferenceActivity {
 
 	public static final String PREFERENCE_RECEIVER = "broadcastreceiver_enabled";
+	public static final String PREFERENCE_UPDATE = "updates_interval";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

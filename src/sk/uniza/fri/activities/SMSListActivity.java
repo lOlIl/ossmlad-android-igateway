@@ -1,29 +1,43 @@
 package sk.uniza.fri.activities;
 
-import java.util.List;
-import java.util.prefs.Preferences;
-
 import sk.uniza.fri.R;
-import sk.uniza.fri.classes.SMS;
 import sk.uniza.fri.comp.SMSBase;
 import sk.uniza.fri.comp.SMSBroadcastReceiver;
+import sk.uniza.fri.comp.SMSSQLiteOpenHelper;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.location.GpsStatus.NmeaListener;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+import android.widget.SimpleCursorAdapter;
 
 public class SMSListActivity extends ListActivity {
 	private static final String TAG = SMSListActivity.class.getName();
 	private static boolean isAlreadyEnabled = false;
 	
 	private SMSBase mDb;
+	private Cursor mCursor;
+	private SimpleCursorAdapter mAdapter;
+	
+	final Handler mHandler = new Handler();
+	final Runnable mUpdater = new Runnable() {
+		public void run() {
+			mCursor.requery();
+			mAdapter.notifyDataSetChanged();
+			Log.e(TAG, "Updated");
+			
+			mHandler.postDelayed(this, mUpdateInterval);
+		}
+	};
+	
 	private SharedPreferences mPrefs;
+	private int mUpdateInterval = 1000;
 	private static final SMSBroadcastReceiver sbr = new SMSBroadcastReceiver();
 
 	/** Called when the activity is first created. */
@@ -35,11 +49,24 @@ public class SMSListActivity extends ListActivity {
 		mDb = new SMSBase(this);
 		mDb.open();
 		
-		List<SMS> sms = mDb.getAllSMS();
-		ArrayAdapter<SMS> adapter = new ArrayAdapter<SMS>(this, android.R.layout.simple_list_item_1, sms);
-		setListAdapter(adapter);
+		mCursor = mDb.getAllSMS();
 		
-		((TextView) findViewById(R.id.activity_smslist_tv_received_count)).setText("" + sms.size());
+		String[] columns = new String[] { 
+				SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEL, 
+				SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEXT, 
+				SMSSQLiteOpenHelper.K_SMS_RECEIVED_TIME 
+				};
+		
+		int[] to = new int[] {
+				R.id.view_smslist_item_tel,
+				R.id.view_smslist_item_text,
+				R.id.view_smslist_item_time,
+				};
+		
+		mAdapter = new SimpleCursorAdapter(this, R.layout.view_smslist_item, mCursor, columns, to);
+		setListAdapter(mAdapter);
+		
+		//((TextView) findViewById(R.id.activity_smslist_tv_received_count)).setText("" + sms.size());
 		
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	}
@@ -56,7 +83,15 @@ public class SMSListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 		mDb.open();
+		startManagingCursor(mCursor);
+		
 		boolean isEnabled = mPrefs.getBoolean(SettingsPreferenceActivity.PREFERENCE_RECEIVER, true);
+		String updateInterval = mPrefs.getString(SettingsPreferenceActivity.PREFERENCE_UPDATE, "1000");
+		mUpdateInterval = Integer.valueOf(updateInterval);
+		
+		mHandler.postDelayed(mUpdater, mUpdateInterval);
+		
+		Log.e(TAG, "update interval: " + updateInterval);
 		
 		if (isEnabled && !isAlreadyEnabled) {
 			IntentFilter filter = new IntentFilter();
@@ -77,6 +112,10 @@ public class SMSListActivity extends ListActivity {
 
 	@Override
 	protected void onPause() {
+		
+		mHandler.removeCallbacks(mUpdater);
+		
+		stopManagingCursor(mCursor);
 		mDb.close();
 		super.onPause();
 	}

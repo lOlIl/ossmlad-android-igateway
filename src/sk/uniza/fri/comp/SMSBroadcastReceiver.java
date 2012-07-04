@@ -33,10 +33,6 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 					SMSBase db = new SMSBase(context);
 					db.open();
 					db.createReceivedSMS("0", messages[0].getMessageBody());
-					List<SMS> data = db.getAllSMS();
-					Log.i(TAG,
-							"Current SMS count: " + data.size());
-					
 					db.close();
 					
 				}

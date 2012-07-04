@@ -42,19 +42,12 @@ public class SMSBase {
 		return db.insert(SMSSQLiteOpenHelper.T_SMS_RECEIVED, null, values);
 	}
 
-	public List<SMS> getAllSMS() {
-		List<SMS> smss = new ArrayList<SMS>();
-
-		Cursor cursor = db.rawQuery("SELECT * FROM " + SMSSQLiteOpenHelper.T_SMS_RECEIVED, null);
-
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			SMS sms = getSMSFromCursor(cursor);
-			smss.add(sms);
-			cursor.moveToNext();
-		}
-		cursor.close();
-		return smss;
+	public Cursor getAllSMS() {
+		return db.rawQuery("SELECT "+ 
+			SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID +" as _id, " +
+			SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEL + ", " +
+			SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEXT + ", " +
+			SMSSQLiteOpenHelper.K_SMS_RECEIVED_TIME + " FROM " + SMSSQLiteOpenHelper.T_SMS_RECEIVED + " ORDER BY " + SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID + " DESC" , null);
 	}
 
 	private SMS getSMSFromCursor(Cursor c) {

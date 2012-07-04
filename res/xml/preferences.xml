@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceCategory android:title="Main settings" >
-        
+    <PreferenceCategory android:title="@string/app_preference_first_title" >
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="broadcastreceiver_enabled"
-            android:summary="Enabled or disabled sms broadcastreceiver to process SMS in application"
-            android:title="Enable processing SMS" />
-        
+            android:summary="@string/app_preference_broadcast_summary"
+            android:title="@string/app_preference_broadcast_title" />
+
+        <ListPreference
+            android:entries="@array/app_preference_updateinterval"
+            android:entryValues="@array/app_preference_updateintervalvalues"
+            android:key="updates_interval"
+            android:summary="@string/app_preference_updates_summary"
+            android:title="@string/app_preference_updates_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>
