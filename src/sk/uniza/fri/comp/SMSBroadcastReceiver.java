@@ -1,8 +1,5 @@
 package sk.uniza.fri.comp;
 
-import java.util.List;
-
-import sk.uniza.fri.classes.SMS;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

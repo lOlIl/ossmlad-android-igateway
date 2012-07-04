@@ -1,12 +1,7 @@
 package sk.uniza.fri.comp;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import sk.uniza.fri.classes.SMS;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -42,24 +37,11 @@ public class SMSBase {
 		return db.insert(SMSSQLiteOpenHelper.T_SMS_RECEIVED, null, values);
 	}
 
-	public Cursor getAllSMS() {
+	public Cursor getAllSMSReceived() {
 		return db.rawQuery("SELECT "+ 
 			SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID +" as _id, " +
 			SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEL + ", " +
 			SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEXT + ", " +
 			SMSSQLiteOpenHelper.K_SMS_RECEIVED_TIME + " FROM " + SMSSQLiteOpenHelper.T_SMS_RECEIVED + " ORDER BY " + SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID + " DESC" , null);
-	}
-
-	private SMS getSMSFromCursor(Cursor c) {
-		SMS s = new SMS();
-		s.setId(Integer.valueOf(c.getString(c.getColumnIndex(SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID))));
-		s.setTel(c.getString(c.getColumnIndex(SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEL)));
-		s.setText(c.getString(c.getColumnIndex(SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEXT)));
-		try {
-			s.setTime(dateFormat.parse(c.getString(c.getColumnIndex(SMSSQLiteOpenHelper.K_SMS_RECEIVED_TIME))));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return s;
 	}
 }

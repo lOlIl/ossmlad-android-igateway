@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="20dp" >
 
@@ -24,13 +24,48 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="0" />
-
+
     <ListView
-        android:id="@android:id/android:list"
-        android:layout_width="fill_parent"
+        android:id="@+id/activity_smslist_lv_received"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/activity_smslist_tv_received_count"
         android:layout_below="@+id/activity_smslist_tv_received"
+        android:layout_toRightOf="@+id/activity_smslist_tv_received_count"
         android:padding="10dp"
         android:text="@string/hello" />
+
+    <ListView
+        android:id="@+id/activity_smslist_lv_sent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/activity_smslist_lv_received"
+        android:layout_toRightOf="@+id/activity_smslist_lv_received"
+        android:padding="10dp"
+        android:text="@string/hello" />
+
+    <TextView
+        android:id="@+id/activity_smslist_tv_sent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/activity_smslist_tv_received_count"
+        android:layout_alignBottom="@+id/activity_smslist_tv_received_count"
+        android:layout_alignLeft="@+id/activity_smslist_lv_sent"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/app_sms_sent_total_desc" />
+
+    <TextView
+        android:id="@+id/activity_smslist_tv_sent_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/activity_smslist_tv_sent"
+        android:layout_alignBottom="@+id/activity_smslist_tv_sent"
+        android:layout_toRightOf="@+id/activity_smslist_tv_sent"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="0" />
 
 </RelativeLayout>

@@ -4,7 +4,7 @@ import sk.uniza.fri.R;
 import sk.uniza.fri.comp.SMSBase;
 import sk.uniza.fri.comp.SMSBroadcastReceiver;
 import sk.uniza.fri.comp.SMSSQLiteOpenHelper;
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -14,26 +14,31 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-public class SMSListActivity extends ListActivity {
-	private static final String TAG = SMSListActivity.class.getName();
+public class SMSIndexActivity extends Activity {
+	private static final String TAG = SMSIndexActivity.class.getName();
 	private static boolean isAlreadyEnabled = false;
 
 	private SMSBase mDb;
-	private Cursor mCursor;
-	private SimpleCursorAdapter mAdapter;
+
+	private Cursor mCursorReceived;
+	private Cursor mCursorSent;
+
+	private SimpleCursorAdapter mAdapterReceived;
+	private SimpleCursorAdapter mAdapterSent;
 
 	final Handler mHandler = new Handler();
 	final Runnable mUpdater = new Runnable() {
 		public void run() {
-			mCursor.requery();
-			mAdapter.notifyDataSetChanged();
+			mCursorReceived.requery();
+			mAdapterReceived.notifyDataSetChanged();
 			Log.e(TAG, "Updated");
 
 			((TextView) findViewById(R.id.activity_smslist_tv_received_count))
-					.setText("" + mAdapter.getCount());
+					.setText("" + mAdapterReceived.getCount());
 
 			mHandler.postDelayed(this, mUpdateInterval);
 		}
@@ -42,6 +47,9 @@ public class SMSListActivity extends ListActivity {
 	private SharedPreferences mPrefs;
 	private int mUpdateInterval = 10000;
 	private static final SMSBroadcastReceiver sbr = new SMSBroadcastReceiver();
+
+	private ListView mReceivedListView;
+	private ListView mSentListView;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -52,8 +60,8 @@ public class SMSListActivity extends ListActivity {
 		mDb = new SMSBase(this);
 		mDb.open();
 
-		mCursor = mDb.getAllSMS();
-		startManagingCursor(mCursor);
+		mCursorReceived = mDb.getAllSMSReceived();
+		startManagingCursor(mCursorReceived);
 
 		String[] columns = new String[] {
 				SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEL,
@@ -63,12 +71,24 @@ public class SMSListActivity extends ListActivity {
 		int[] to = new int[] { R.id.view_smslist_item_tel,
 				R.id.view_smslist_item_text, R.id.view_smslist_item_time, };
 
-		mAdapter = new SimpleCursorAdapter(this, R.layout.view_smslist_item,
-				mCursor, columns, to);
-		setListAdapter(mAdapter);
+		mReceivedListView = (ListView) findViewById(R.id.activity_smslist_lv_received);
+		mSentListView = (ListView) findViewById(R.id.activity_smslist_lv_sent);
+
+		mAdapterReceived = new SimpleCursorAdapter(this,
+				R.layout.view_smslist_item, mCursorReceived, columns, to);
+		mReceivedListView.setAdapter(mAdapterReceived);
 
 		((TextView) findViewById(R.id.activity_smslist_tv_received_count))
-				.setText("" + mAdapter.getCount());
+				.setText("" + mAdapterReceived.getCount());
+
+		// mCursorSent = mDb.getAllSMSSent()
+		//
+		// mAdapterSent = new SimpleCursorAdapter(this,
+		// R.layout.view_smslist_item,
+		// mCursorSent, columns, to);
+		// mReceivedListView.setAdapter(mAdapterSent);
+		// ((TextView) findViewById(R.id.activity_smslist_tv_sent_count))
+		// .setText("" + mAdapterSent.getCount());
 
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	}
@@ -85,7 +105,7 @@ public class SMSListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 		mDb.open();
-		startManagingCursor(mCursor);
+		startManagingCursor(mCursorReceived);
 
 		boolean isEnabled = mPrefs.getBoolean(
 				SettingsPreferenceActivity.PREFERENCE_RECEIVER, true);
@@ -116,10 +136,9 @@ public class SMSListActivity extends ListActivity {
 
 	@Override
 	protected void onPause() {
+		mHandler.removeCallbacks(mUpdater);
 
-		// mHandler.removeCallbacks(mUpdater);
-
-		stopManagingCursor(mCursor);
+		stopManagingCursor(mCursorReceived);
 		mDb.close();
 		super.onPause();
 	}

@@ -4,6 +4,7 @@
     <string name="hello">Hello World, StartingActivity!</string>
     <string name="app_name">OSSmlad-igateway</string>
     <string name="app_sms_received_total_desc">Total received:</string>
+    <string name="app_sms_sent_total_desc">Total sent:</string>
 
     <!-- Preferences -->
     <string name="app_preference_first_title">Main settings</string>
