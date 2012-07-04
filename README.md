@@ -1,4 +1,4 @@
-OSSmlad-igateway
+OSSmlad-android-igateway
 ========================
 
 Simple android application used as an internet gateway for received SMS.
