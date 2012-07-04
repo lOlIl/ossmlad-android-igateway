@@ -1,28 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="7dp" >
 
     <TextView
         android:id="@+id/view_smslist_item_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/view_smslist_item_tel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:text="Time"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="10dp" />
 
     <TextView
         android:id="@+id/view_smslist_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:layout_alignBottom="@+id/view_smslist_item_tel"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/view_smslist_item_time"
+        android:layout_toRightOf="@+id/view_smslist_item_time"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:text="Text"
+        android:textSize="12dp" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/view_smslist_item_tel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/view_smslist_item_time"
+        android:text="Tel"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="10dp" />
+
+</RelativeLayout>
