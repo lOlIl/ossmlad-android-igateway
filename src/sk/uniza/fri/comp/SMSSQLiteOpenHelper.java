@@ -14,12 +14,12 @@ public class SMSSQLiteOpenHelper extends SQLiteOpenHelper {
 	public static final String K_SMS_RECEIVED_TEXT = "sms_received_text";
 
 	private static final String DATABASE_NAME = "commments.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	// Database creation sql statement
 	private static final String DATABASE_CREATE = "create table "
 			+ T_SMS_RECEIVED + "(" + K_SMS_RECEIVED_ID
-			+ " integer primary key autoincrement, " + K_SMS_RECEIVED_TEL
+			+ " integer primary key, " + K_SMS_RECEIVED_TEL
 			+ " varchar(16) not null, " + K_SMS_RECEIVED_TIME
 			+ " datetime not null, " + K_SMS_RECEIVED_TEXT + " text not null);";
 

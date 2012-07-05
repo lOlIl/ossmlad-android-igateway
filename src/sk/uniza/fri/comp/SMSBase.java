@@ -28,20 +28,37 @@ public class SMSBase {
 		dbHelper.close();
 	}
 
-	public long createReceivedSMS(String tel, String text) {
+	public int createSMSReceived(String tel, String text) {
 		ContentValues values = new ContentValues();
+		int receivedID = getMaxSMSReceived() + 1;
+		values.put(SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID, receivedID);
 		values.put(SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEL, tel);
 		values.put(SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEXT, text);
 		values.put(SMSSQLiteOpenHelper.K_SMS_RECEIVED_TIME,
 				dateFormat.format(new Date()));
-		return db.insert(SMSSQLiteOpenHelper.T_SMS_RECEIVED, null, values);
+		db.insert(SMSSQLiteOpenHelper.T_SMS_RECEIVED, null, values);
+		return receivedID;
 	}
 
 	public Cursor getAllSMSReceived() {
-		return db.rawQuery("SELECT "+ 
-			SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID +" as _id, " +
-			SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEL + ", " +
-			SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEXT + ", " +
-			SMSSQLiteOpenHelper.K_SMS_RECEIVED_TIME + " FROM " + SMSSQLiteOpenHelper.T_SMS_RECEIVED + " ORDER BY " + SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID + " DESC" , null);
+		return db.rawQuery("SELECT " + SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID
+				+ " as _id, " + SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEL + ", "
+				+ SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEXT + ", "
+				+ SMSSQLiteOpenHelper.K_SMS_RECEIVED_TIME + " FROM "
+				+ SMSSQLiteOpenHelper.T_SMS_RECEIVED + " ORDER BY "
+				+ SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID + " DESC", null);
+	}
+
+	private int getMaxSMSReceived() {
+		Cursor cursor = db.rawQuery("SELECT MAX("
+				+ SMSSQLiteOpenHelper.K_SMS_RECEIVED_ID + ") FROM "
+				+ SMSSQLiteOpenHelper.T_SMS_RECEIVED, null);
+
+		int id = 0;
+		if (cursor.moveToFirst())
+			id = cursor.getInt(0);
+		
+		cursor.close();
+		return id;
 	}
 }
