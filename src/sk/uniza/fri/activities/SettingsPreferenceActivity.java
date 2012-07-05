@@ -10,6 +10,8 @@ public class SettingsPreferenceActivity extends PreferenceActivity {
 	public static final String PREFERENCE_UPDATE = "updates_interval";
 	public static final String PREFERENCE_SERVER_URL = "server_url";
 	
+	public static final String SERVER_URL = "http://localhost/";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

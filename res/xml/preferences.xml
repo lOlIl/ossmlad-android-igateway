@@ -3,7 +3,7 @@
 
     <PreferenceCategory android:title="@string/app_preference_first_title" >
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="broadcastreceiver_enabled"
             android:summary="@string/app_preference_broadcast_summary"
             android:title="@string/app_preference_broadcast_title" />

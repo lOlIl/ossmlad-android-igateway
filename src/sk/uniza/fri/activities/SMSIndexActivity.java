@@ -19,6 +19,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class SMSIndexActivity extends Activity {
+	private static final boolean DEBUG = false;
 	private static final String TAG = SMSIndexActivity.class.getName();
 	private static boolean isAlreadyEnabled = false;
 
@@ -35,7 +36,7 @@ public class SMSIndexActivity extends Activity {
 		public void run() {
 			mCursorReceived.requery();
 			mAdapterReceived.notifyDataSetChanged();
-			Log.e(TAG, "Updated");
+			if (DEBUG) Log.e(TAG, "Updated");
 
 			((TextView) findViewById(R.id.activity_smslist_tv_received_count))
 					.setText("" + mAdapterReceived.getCount());
@@ -99,7 +100,8 @@ public class SMSIndexActivity extends Activity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_MENU) {
 			startActivity(new Intent(this, SettingsPreferenceActivity.class));
-		}
+		} else if (keyCode == KeyEvent.KEYCODE_BACK)
+			finish();
 
 		return true;
 	}
@@ -117,7 +119,7 @@ public class SMSIndexActivity extends Activity {
 		mUpdateInterval = Integer.valueOf(updateInterval);
 
 		String serverUrl = mPrefs.getString(
-				SettingsPreferenceActivity.PREFERENCE_SERVER_URL, "");
+				SettingsPreferenceActivity.PREFERENCE_SERVER_URL, SettingsPreferenceActivity.SERVER_URL);
 		
 		mHandler.postDelayed(mUpdater, mUpdateInterval);
 
@@ -148,5 +150,14 @@ public class SMSIndexActivity extends Activity {
 		stopManagingCursor(mCursorReceived);
 		mDb.close();
 		super.onPause();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		
+		unregisterReceiver(sbr);
+		Log.e(TAG, "Closed & Unregistered");
+		
+		super.onDestroy();
 	}
 }
