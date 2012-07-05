@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import sk.uniza.fri.activities.SMSIndexActivity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -33,10 +34,14 @@ public class SMSGatewayAsyncTask extends AsyncTask<String, Void, JSONObject> {
 	}
 
 	/**
-	 * @param args[0] - URL
-	 * @param args[1] - event ID
-	 * @param args[2] - SMS received ID (from DB)
-	 * @param args[3] - SMS text
+	 * @param args
+	 *            [0] - URL
+	 * @param args
+	 *            [1] - event ID
+	 * @param args
+	 *            [2] - SMS received ID (from DB)
+	 * @param args
+	 *            [3] - SMS text
 	 * */
 	@Override
 	protected JSONObject doInBackground(String... args) {
@@ -68,22 +73,39 @@ public class SMSGatewayAsyncTask extends AsyncTask<String, Void, JSONObject> {
 
 	@Override
 	protected void onPostExecute(JSONObject response) {
+		// Get sender Telephone no
+		SMSBase db = new SMSBase(mContext);
+		db.open();
+
 		// Handle HTTP Response
 		JSONObject resp;
+		int id;
 		try {
 			resp = response.getJSONObject("data");
-			Object id = resp.get("id");
-			Log.e("RESP id", id.toString());
-			
+			id = Integer.valueOf(resp.get("id").toString());
+			Log.e("RESP id", "" + id);
+
+			String tel = db.getSMSSender(id);
+
 			JSONArray sms = resp.getJSONArray("sms");
 			for (int i = 0; i < sms.length(); i++) {
-				String parsedSmsData = ((JSONObject)sms.get(i)).getString("text");
+				String parsedSmsData = ((JSONObject) sms.get(i))
+						.getString("text");
 				Log.e("RESP sms", parsedSmsData);
+
+				int sentID = db.createSMSSent(id, parsedSmsData);
+				Log.e(TAG, "SENT id" + sentID);
+				if (tel != null) {
+
+					SMSIndexActivity.sentSMS(mContext, tel, parsedSmsData);
+					db.updateSMSSent(sentID);
+				}
 			}
-			
 
 		} catch (JSONException e) {
 			Log.e(TAG, e.toString());
 		}
+
+		db.close();
 	}
 }

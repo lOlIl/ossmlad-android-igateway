@@ -5,6 +5,8 @@ import sk.uniza.fri.comp.SMSBase;
 import sk.uniza.fri.comp.SMSBroadcastReceiver;
 import sk.uniza.fri.comp.SMSSQLiteOpenHelper;
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -12,6 +14,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ListView;
@@ -21,6 +24,9 @@ import android.widget.TextView;
 public class SMSIndexActivity extends Activity {
 	private static final boolean DEBUG = false;
 	private static final String TAG = SMSIndexActivity.class.getName();
+	public static final String ACTION_SMS_SENT = "action_sent";
+	public static final String ACTION_SMS_DELIVERED = "action_delivered";
+
 	private static boolean isAlreadyEnabled = false;
 
 	private SMSBase mDb;
@@ -35,11 +41,19 @@ public class SMSIndexActivity extends Activity {
 	final Runnable mUpdater = new Runnable() {
 		public void run() {
 			mCursorReceived.requery();
+			mCursorSent.requery();
+
 			mAdapterReceived.notifyDataSetChanged();
-			if (DEBUG) Log.e(TAG, "Updated");
+			mAdapterSent.notifyDataSetChanged();
+
+			if (DEBUG)
+				Log.e(TAG, "Updated");
 
 			((TextView) findViewById(R.id.activity_smslist_tv_received_count))
 					.setText("" + mAdapterReceived.getCount());
+
+			((TextView) findViewById(R.id.activity_smslist_tv_sent_count))
+					.setText("" + mAdapterSent.getCount());
 
 			mHandler.postDelayed(this, mUpdateInterval);
 		}
@@ -69,10 +83,8 @@ public class SMSIndexActivity extends Activity {
 				SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEXT,
 				SMSSQLiteOpenHelper.K_SMS_RECEIVED_TIME };
 
-		int[] to = new int[] { 
-				R.id.view_smslist_item_tel,
-				R.id.view_smslist_item_text, 
-				R.id.view_smslist_item_time };
+		int[] to = new int[] { R.id.view_smslist_item_tel,
+				R.id.view_smslist_item_text, R.id.view_smslist_item_time };
 
 		mReceivedListView = (ListView) findViewById(R.id.activity_smslist_lv_received);
 		mSentListView = (ListView) findViewById(R.id.activity_smslist_lv_sent);
@@ -84,14 +96,14 @@ public class SMSIndexActivity extends Activity {
 		((TextView) findViewById(R.id.activity_smslist_tv_received_count))
 				.setText("" + mAdapterReceived.getCount());
 
-		// mCursorSent = mDb.getAllSMSSent()
-		//
-		// mAdapterSent = new SimpleCursorAdapter(this,
-		// R.layout.view_smslist_item,
-		// mCursorSent, columns, to);
-		// mReceivedListView.setAdapter(mAdapterSent);
-		// ((TextView) findViewById(R.id.activity_smslist_tv_sent_count))
-		// .setText("" + mAdapterSent.getCount());
+		mCursorSent = mDb.getAllSMSSent();
+
+		mAdapterSent = new SimpleCursorAdapter(this,
+				R.layout.view_smslist_item, mCursorSent, columns, to);
+		mSentListView.setAdapter(mAdapterSent);
+
+		((TextView) findViewById(R.id.activity_smslist_tv_sent_count))
+				.setText("" + mAdapterSent.getCount());
 
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 	}
@@ -113,14 +125,15 @@ public class SMSIndexActivity extends Activity {
 
 		boolean isEnabled = mPrefs.getBoolean(
 				SettingsPreferenceActivity.PREFERENCE_RECEIVER, true);
-		
+
 		String updateInterval = mPrefs.getString(
 				SettingsPreferenceActivity.PREFERENCE_UPDATE, "10000");
 		mUpdateInterval = Integer.valueOf(updateInterval);
 
 		String serverUrl = mPrefs.getString(
-				SettingsPreferenceActivity.PREFERENCE_SERVER_URL, SettingsPreferenceActivity.SERVER_URL);
-		
+				SettingsPreferenceActivity.PREFERENCE_SERVER_URL,
+				SettingsPreferenceActivity.SERVER_URL);
+
 		mHandler.postDelayed(mUpdater, mUpdateInterval);
 
 		Log.e(TAG, "update interval: " + updateInterval);
@@ -151,13 +164,41 @@ public class SMSIndexActivity extends Activity {
 		mDb.close();
 		super.onPause();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
-		
+
 		unregisterReceiver(sbr);
 		Log.e(TAG, "Closed & Unregistered");
-		
+
 		super.onDestroy();
+	}
+
+	@Override
+	public void onNewIntent(Intent intent) {
+		if (intent == null) {
+			return;
+		}
+
+		String action = intent.getAction();
+		if (action.equals(ACTION_SMS_SENT)) {
+			Log.e(TAG, "SMS sent");
+
+		} else if (action.equals(ACTION_SMS_DELIVERED)) {
+			Log.e(TAG, "SMS delivered");
+		}
+	}
+
+	public static void sentSMS(Context context, String tel, String text) {
+		final PendingIntent sentIntent = PendingIntent.getActivity(context, 0,
+				new Intent(context, SMSIndexActivity.class)
+						.setAction(SMSIndexActivity.ACTION_SMS_SENT), 0);
+
+		final PendingIntent deliveredIntent = PendingIntent.getActivity(
+				context, 0, new Intent(context, SMSIndexActivity.class)
+						.setAction(SMSIndexActivity.ACTION_SMS_DELIVERED), 0);
+
+		final SmsManager sm = SmsManager.getDefault();
+		sm.sendTextMessage(tel, null, text, sentIntent, deliveredIntent);
 	}
 }
