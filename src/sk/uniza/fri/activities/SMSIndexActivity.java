@@ -111,13 +111,18 @@ public class SMSIndexActivity extends Activity {
 
 		boolean isEnabled = mPrefs.getBoolean(
 				SettingsPreferenceActivity.PREFERENCE_RECEIVER, true);
+		
 		String updateInterval = mPrefs.getString(
 				SettingsPreferenceActivity.PREFERENCE_UPDATE, "10000");
 		mUpdateInterval = Integer.valueOf(updateInterval);
 
+		String serverUrl = mPrefs.getString(
+				SettingsPreferenceActivity.PREFERENCE_SERVER_URL, "");
+		
 		mHandler.postDelayed(mUpdater, mUpdateInterval);
 
 		Log.e(TAG, "update interval: " + updateInterval);
+		Log.e(TAG, "server url: " + serverUrl);
 
 		if (isEnabled && !isAlreadyEnabled) {
 			IntentFilter filter = new IntentFilter();

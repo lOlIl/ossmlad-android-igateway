@@ -8,6 +8,7 @@ public class SettingsPreferenceActivity extends PreferenceActivity {
 
 	public static final String PREFERENCE_RECEIVER = "broadcastreceiver_enabled";
 	public static final String PREFERENCE_UPDATE = "updates_interval";
+	public static final String PREFERENCE_SERVER_URL = "server_url";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

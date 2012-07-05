@@ -14,6 +14,10 @@
     
     <string name="app_preference_updates_title">Updates interval</string>
     <string name="app_preference_updates_summary">How often updates will be performed. Current: </string>
+    
+    <string name="app_preference_server_title">Server URL</string>
+    <string name="app_preference_server_summary">Default server URL to sent received SMS</string>
+    
     <string-array name="app_preference_updateinterval">
         <item name="1000">Every 1 second</item>
         <item name="5000">Every 5 seconds</item>

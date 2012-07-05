@@ -14,6 +14,12 @@
             android:key="updates_interval"
             android:summary="@string/app_preference_updates_summary"
             android:title="@string/app_preference_updates_title" />
+
+        <EditTextPreference
+            android:key="server_url"
+            android:persistent="true"
+            android:summary="@string/app_preference_server_summary"
+            android:title="@string/app_preference_server_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>
