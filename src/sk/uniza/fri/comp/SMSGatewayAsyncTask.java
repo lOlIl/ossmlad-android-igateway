@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -72,10 +73,14 @@ public class SMSGatewayAsyncTask extends AsyncTask<String, Void, JSONObject> {
 		try {
 			resp = response.getJSONObject("data");
 			Object id = resp.get("id");
-			Object sms = resp.get("sms");
-			Log.e("RESP", resp.toString());
 			Log.e("RESP id", id.toString());
-			Log.e("RESP sms", sms.toString());
+			
+			JSONArray sms = resp.getJSONArray("sms");
+			for (int i = 0; i < sms.length(); i++) {
+				String parsedSmsData = ((JSONObject)sms.get(i)).getString("text");
+				Log.e("RESP sms", parsedSmsData);
+			}
+			
 
 		} catch (JSONException e) {
 			Log.e(TAG, e.toString());
