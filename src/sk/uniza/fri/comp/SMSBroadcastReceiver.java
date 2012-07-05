@@ -29,7 +29,7 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
 					
 					SMSBase db = new SMSBase(context);
 					db.open();
-					db.createReceivedSMS("0", messages[0].getMessageBody());
+					db.createReceivedSMS(messages[0].getOriginatingAddress(), messages[0].getMessageBody());
 					db.close();
 					
 				}

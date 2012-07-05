@@ -21,13 +21,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.SettingsPreferenceActivity" />
-
-        <receiver
-            android:name=".comp.SMSBroadcastReceiver" >
-            <intent-filter android:priority="1" >
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

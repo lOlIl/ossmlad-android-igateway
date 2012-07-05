@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:padding="7dp" >
 
     <TextView
+        android:id="@+id/view_smslist_item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="5dp"
+        android:text="Time"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="10dp" />
+
+    <TextView
         android:id="@+id/view_smslist_item_tel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:paddingLeft="5dp"
         android:text="Tel"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -20,22 +27,9 @@
         android:id="@+id/view_smslist_item_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/view_smslist_item_tel"
-        android:layout_below="@+id/view_smslist_item_tel"
         android:gravity="center_vertical"
         android:padding="5dp"
         android:text="Text"
         android:textSize="12dp" />
 
-    <TextView
-        android:id="@+id/view_smslist_item_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:paddingRight="5dp"
-        android:text="Time"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="10dp" />
-
-</RelativeLayout>
+</LinearLayout>

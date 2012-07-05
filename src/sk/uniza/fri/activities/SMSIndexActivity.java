@@ -68,8 +68,10 @@ public class SMSIndexActivity extends Activity {
 				SMSSQLiteOpenHelper.K_SMS_RECEIVED_TEXT,
 				SMSSQLiteOpenHelper.K_SMS_RECEIVED_TIME };
 
-		int[] to = new int[] { R.id.view_smslist_item_tel,
-				R.id.view_smslist_item_text, R.id.view_smslist_item_time, };
+		int[] to = new int[] { 
+				R.id.view_smslist_item_tel,
+				R.id.view_smslist_item_text, 
+				R.id.view_smslist_item_time };
 
 		mReceivedListView = (ListView) findViewById(R.id.activity_smslist_lv_received);
 		mSentListView = (ListView) findViewById(R.id.activity_smslist_lv_sent);
